@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import Sidebar from "./components/Sidebar/Sidebar.vue";
+import MainScreen from "./components/MainScreen/MainScreen.vue";
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" />
+  <Sidebar />
+  <MainScreen />
 </template>
 
 <style scoped>
-
 </style>

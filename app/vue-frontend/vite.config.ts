@@ -6,6 +6,9 @@ import tailwind from "tailwindcss"
 import autoprefixer from "autoprefixer"
 
 export default defineConfig({
+  server: {
+    port: 8080,
+  },
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()],
