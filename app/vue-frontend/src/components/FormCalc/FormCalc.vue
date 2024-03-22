@@ -21,13 +21,13 @@
           name="destiny"
           id="destiny"
         >
-          <option
+          <!-- <option
             v-for="destination in destinations"
             :key="destination.id"
             :value="destination.id"
           >
             {{ destination.city }}
-          </option>
+          </option> -->
         </select>
       </div>
 

@@ -10,8 +10,8 @@ COPY requirements.txt .
 # Instala as dependências do Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todos os arquivos do diretório atual para o diretório de trabalho no container
-COPY . .
+# Copia todos os arquivos da pasta src para o diretório de trabalho no container
+COPY src/ .
 
 # Expõe a porta 80 para acesso à API
 EXPOSE 3000
