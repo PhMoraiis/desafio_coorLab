@@ -16,9 +16,9 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: mydatabase
+      POSTGRES_USER: cbUser
+      POSTGRES_PASSWORD: cbViagensPass
+      POSTGRES_DB: cbViagens
     ports:
       - "5432:5432"
     volumes:
