@@ -1,9 +1,25 @@
 from fastapi import FastAPI, HTTPException  
+from fastapi.middleware.cors import CORSMiddleware
 from models import Trip  
 from services import db_dependency  
 from typing import List 
 
 app = FastAPI()  
+
+# Configuração do CORS
+origins = [
+    "http://localhost:*",
+    "http://localhost:8080",
+]
+
+# Adicionar o middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 @app.get("/")  
 async def root():

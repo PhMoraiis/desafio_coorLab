@@ -14,8 +14,11 @@
       <div
         class="flex flex-col shadow-md lg:flex-row items-start h-full w-full mb-4 rounded bg-gray-50 dark:bg-gray-300"
       >
-        <FormCalc />
-        <ResultCalc />
+        <FormCalc @tripFound="handleTripFound" />
+        <!-- Ouvindo o evento tripFound -->
+
+        <ResultCalc :tripDetails="tripDetails" />
+        <!-- Passando os detalhes da viagem como props -->
       </div>
     </div>
   </div>
@@ -25,4 +28,12 @@
 import ResultCalc from "@/components/ResultCalc/ResulCalc.vue";
 import FormCalc from "@/components/FormCalc/FormCalc.vue";
 import { Calculator } from "lucide-vue-next";
+import { ref } from "vue";
+
+const tripDetails = ref(""); // Ref para armazenar os detalhes da viagem
+
+const handleTripFound = (data: any) => {
+  tripDetails.value = data; // Atualizando tripDetails com os detalhes da viagem
+};
 </script>
+

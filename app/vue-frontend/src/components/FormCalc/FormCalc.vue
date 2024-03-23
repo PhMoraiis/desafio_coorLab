@@ -17,17 +17,20 @@
         >
         <select
           v-model="selectedDestination"
-          class="p-2 bg-gray-100 rounded"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#00a9b7] focus:border-[#00a9b7] block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#00a9b7] dark:focus:border-[#00a9b7]"
           name="destiny"
           id="destiny"
         >
-          <!-- <option
+          <option value="" disabled selected hidden>
+            Selecione o seu Destino
+          </option>
+          <option
             v-for="destination in destinations"
-            :key="destination.id"
-            :value="destination.id"
+            :key="destination"
+            :value="destination"
           >
-            {{ destination.city }}
-          </option> -->
+            {{ destination }}
+          </option>
         </select>
       </div>
 
@@ -38,7 +41,7 @@
         >
         <input
           v-model="selectedDate"
-          class="p-2 bg-gray-100 rounded"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#00a9b7] focus:border-[#00a9b7] block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#00a9b7] dark:focus:border-[#00a9b7]"
           type="date"
           name="date"
           id="date"
@@ -51,6 +54,8 @@
         </Button>
         <Button
           class="bg-[#e9d736] dark:bg-[#e9d736] text-gray-800 hover:text-gray-100"
+          type="button"
+          @click="clearForm"
         >
           Limpar
         </Button>
@@ -86,8 +91,10 @@
 import { PlaneTakeoff, TriangleAlert } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, defineEmits } from "vue";
 import { API } from "@/services/API";
+
+const emit  = defineEmits(["tripFound"]);
 
 const selectedDestination = ref("");
 const selectedDate = ref("");
@@ -96,7 +103,7 @@ const showModal = ref(false);
 
 const fetchDestinations = async () => {
   try {
-    const response = await API.get("/destinations");
+    const response = await API.get("/cities/");
     destinations.value = response.data;
   } catch (error) {
     console.error("Erro ao buscar destinos:", error);
@@ -112,12 +119,25 @@ const validateAndSubmit = async () => {
     showModal.value = true;
   } else {
     showModal.value = false;
-    // Submeter formulário
-    console.log("Formulário submetido!");
+    try {
+      const response = await API.get(
+        `/trips/?city=${selectedDestination.value}`
+      );
+      console.log("Viagens encontradas: ", response.data);
+      emit("tripFound", response.data);
+    } catch (error) {
+      console.error("Erro ao buscar viagens:", error);
+    }
   }
 };
 
 const closeModal = () => {
   showModal.value = false;
 };
+
+const clearForm = () => {
+  selectedDestination.value = "";
+  selectedDate.value = "";
+};
 </script>
+
