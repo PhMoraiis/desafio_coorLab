@@ -37,15 +37,16 @@ run_fastapi_backend_with_docker() {
 # Função para iniciar o backend FastAPI sem Docker
 run_fastapi_backend_without_docker() {
     echo "Iniciando o backend FastAPI sem Docker..."
-    cd "../py-backend/src/withoutDocker/" || exit
+    cd "../py-backend" || exit
+    source env/bin/activate
+    pip install -r requirements.txt
+    cd "src/withoutDocker/" || exit
+    pip install -r requirements.txt
     uvicorn main:app --reload --port 3000 &
     echo "Backend FastAPI está em execução na porta 3000."
 }
 
-# Diretório raiz do projeto
-project_dir=$(dirname "$(realpath "$0")")
-
-# Verificar qual caso de uso está sendo utilizado
+# Verifica qual caso de uso está sendo utilizado
 if [[ "$1" == "docker" ]]; then
     check_docker_installed
     run_vue_frontend_with_docker
