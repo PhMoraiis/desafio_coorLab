@@ -43,29 +43,29 @@
 
 # Função para iniciar o frontend Vue sem Docker
 run_vue_frontend_without_docker() {
-    echo "Iniciando o frontend Vue sem Docker..."
+    echo "Starting Vue frontend without Docker..."
     cd "vue-frontend" || { echo 'Erro: Diretório "vue-frontend" não encontrado.' ; exit 1; }
     yarn install || { echo 'Erro: Yarn não está instalado ou não é acessível.' ; exit 1; }
     yarn dev &
-    echo "Frontend Vue está em execução na porta 8080."
+    echo "Vue frontend is running on port 8080."
 }
 
 # Função para iniciar o backend FastAPI sem Docker
 run_fastapi_backend_without_docker() {
-    echo "Iniciando o backend FastAPI sem Docker..."
+    echo "Starting FastAPI backend without Docker..."
     cd "../py-backend" || exit
     source env/bin/activate
     pip install -r requirements.txt
     cd "src/withoutDocker/" || exit
     pip install -r requirements.txt
     uvicorn main:app --reload --port 3000 &
-    echo "Backend FastAPI está em execução na porta 3000."
+    echo "FastAPI backend is running on port 3000."
 }
 
 # Executa o frontend Vue e o backend FastAPI sem Docker
 run_vue_frontend_without_docker
 run_fastapi_backend_without_docker
 
-echo "Aplicação iniciada com sucesso!"
-echo "Acesse o frontend em http://localhost:8080"
-echo "Acesse a API em http://localhost:3000/docs"
+echo "Application started successfully!"
+echo "Access the frontend at http://localhost:8080"
+echo "Access the API at http://localhost:3000/docs"

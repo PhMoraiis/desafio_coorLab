@@ -104,7 +104,7 @@ const fetchDestinations = async () => {
     const response = await API.get("/cities/");
     destinations.value = response.data;
   } catch (error) {
-    console.error("Erro ao buscar destinos:", error);
+    console.error("Error when searching for destinations:", error);
   }
 };
 
@@ -123,7 +123,7 @@ const validateAndSubmit = async () => {
       );
       emit("tripFound", response.data);
     } catch (error) {
-      console.error("Erro ao buscar viagens:", error);
+      console.error("Error when searching for trips:", error);
     }
   }
 };
