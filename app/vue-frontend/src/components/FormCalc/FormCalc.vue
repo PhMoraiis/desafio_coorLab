@@ -18,14 +18,12 @@
         <select
           v-model="selectedDestination"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#00a9b7] focus:border-[#00a9b7] block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#00a9b7] dark:focus:border-[#00a9b7]"
-          name="destiny"
-          id="destiny"
         >
           <option value="" disabled selected hidden>
             Selecione o seu Destino
           </option>
           <option
-            v-for="destination in destinations"
+            v-for="destination in sortedDestinations"
             :key="destination"
             :value="destination"
           >
@@ -91,14 +89,14 @@
 import { PlaneTakeoff, TriangleAlert } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { API } from "@/services/API";
 
-const emit  = defineEmits(["tripFound"]);
+const emit = defineEmits(["tripFound"]);
 
 const selectedDestination = ref("");
 const selectedDate = ref("");
-const destinations = ref([]);
+const destinations = ref<string[]>([]);
 const showModal = ref(false);
 
 const fetchDestinations = async () => {
@@ -140,5 +138,9 @@ const clearForm = () => {
   // Limpar as informações do envio
   emit("tripFound", null);
 };
-</script>
 
+// Função para ordenar as cidades em ordem alfabética
+const sortedDestinations = computed(() => {
+  return destinations.value.slice().sort((a, b) => a.localeCompare(b));
+});
+</script>
