@@ -91,7 +91,7 @@
 import { PlaneTakeoff, TriangleAlert } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ref, onMounted, defineEmits } from "vue";
+import { ref, onMounted } from "vue";
 import { API } from "@/services/API";
 
 const emit  = defineEmits(["tripFound"]);
@@ -123,7 +123,6 @@ const validateAndSubmit = async () => {
       const response = await API.get(
         `/trips/?city=${selectedDestination.value}`
       );
-      console.log("Viagens encontradas: ", response.data);
       emit("tripFound", response.data);
     } catch (error) {
       console.error("Erro ao buscar viagens:", error);
@@ -138,6 +137,8 @@ const closeModal = () => {
 const clearForm = () => {
   selectedDestination.value = "";
   selectedDate.value = "";
+  // Limpar as informações do envio
+  emit("tripFound", null);
 };
 </script>
 
