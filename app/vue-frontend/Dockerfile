@@ -5,16 +5,16 @@ FROM node:lts-alpine AS build
 WORKDIR /app
 
 # Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN yarn install
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the Vue application
-RUN yarn build
+RUN npm run build
 
 # Stage 2 - Serve the built application with Nginx
 FROM nginx:alpine

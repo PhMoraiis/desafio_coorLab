@@ -11,14 +11,18 @@ services:
       - db
     volumes:
       - ./src:/app/src/withDocker/
+    environment:
+      POSTGRES_USER: UserCB
+      POSTGRES_PASSWORD: CBPass
+      POSTGRES_DB: CBViagens
 
   db:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_USER: cbUser
-      POSTGRES_PASSWORD: cbViagensPass
-      POSTGRES_DB: cbViagens
+      POSTGRES_USER: UserCB
+      POSTGRES_PASSWORD: CBPass
+      POSTGRES_DB: CBViagens
     ports:
       - "5432:5432"
     volumes:
