@@ -1,66 +1,68 @@
 #!/bin/bash
 
+# Função para verificar se o Docker está instalado
+check_docker_installed() {
+    if ! command -v docker &> /dev/null; then
+        echo "Erro: Docker não está instalado ou não é acessível."
+        exit 1
+    fi
+}
+
+# Função para construir e executar o frontend Vue com Docker
+run_vue_frontend_with_docker() {
+    echo "Construindo e iniciando o frontend Vue com Docker..."
+    cd "$project_dir/app/vue-frontend" || exit
+    docker build -t vue-frontend .
+    docker run -d -p 8080:8080 vue-frontend
+    echo "Frontend Vue está em execução na porta 8080."
+}
+
+# Função para iniciar o frontend Vue sem Docker
+run_vue_frontend_without_docker() {
+    echo "Iniciando o frontend Vue sem Docker..."
+    cd "$project_dir/app/vue-frontend" || exit
+    yarn install
+    yarn dev &
+    echo "Frontend Vue está em execução na porta 8080."
+}
+
+# Função para construir e executar o backend FastAPI com Docker
+run_fastapi_backend_with_docker() {
+    echo "Construindo e iniciando o backend FastAPI com Docker..."
+    cd "$project_dir/app/py-backend/src/withDocker" || exit
+    docker-compose up -d
+    echo "Backend FastAPI está em execução."
+}
+
+# Função para iniciar o backend FastAPI sem Docker
+run_fastapi_backend_without_docker() {
+    echo "Iniciando o backend FastAPI sem Docker..."
+    cd "$project_dir/app/py-backend/src/withoutDocker" || exit
+    uvicorn main:app --reload --port 3000 &
+    echo "Backend FastAPI está em execução na porta 3000."
+}
+
 # Verificar se o Docker está instalado
-if ! command -v docker &> /dev/null; then
-    echo "Erro: Docker não está instalado ou não é acessível."
-    exit 1
-fi
+check_docker_installed
 
 # Diretório raiz do projeto
 project_dir=$(dirname "$(realpath "$0")")
 
-# Construir e executar o frontend Vue
-echo "Construindo e iniciando o frontend Vue..."
-cd "$project_dir/vue-frontend/" || exit
-docker build -t vue-frontend .
-docker run -d -p 8080:8080 vue-frontend
-
-# Aguardar alguns segundos para o frontend inicializar completamente
-sleep 5
-
-# Construir e executar o backend FastAPI
-echo "Construindo e iniciando o backend FastAPI..."
-cd "$project_dir/py-backend/" || exit
-docker compose up -d
-
-# URL do servidor FastAPI
-server_url="http://localhost:3000"
-
-# Endpoint para verificar se a API está no ar
-healthcheck_endpoint="/health"
-
-# Endpoint para adicionar dados ao banco de dados
-add_data_endpoint="/adddatajson"
-
-# Verificar se a API está no ar e totalmente funcional
-echo "Verificando status da API..."
-response=$(curl -sSL -w "%{http_code}" "$server_url$healthcheck_endpoint" -o /dev/null)
-if [ "$response" != "200" ]; then
-    echo "Erro: A API não está disponível ou funcional."
+# Verificar qual caso de uso está sendo utilizado
+if [[ "$1" == "docker" ]]; then
+    run_vue_frontend_with_docker
+    run_fastapi_backend_with_docker
+elif [[ "$1" == "nodocker" ]]; then
+    run_vue_frontend_without_docker
+    run_fastapi_backend_without_docker
+else
+    echo "Por favor, especifique 'docker' ou 'nodocker' como argumento para escolher o caso de uso."
+    echo "Exemplo: ./run.sh docker"
+    echo "ou"
+    echo "Exemplo: ./run.sh nodocker"
     exit 1
 fi
 
-# Aguardar um momento para os contêineres do banco de dados iniciarem completamente
-echo "Aguardando inicialização dos contêineres do banco de dados..."
-sleep 10
-
-# Verificar se o contêiner do banco de dados está em execução
-echo "Verificando contêiner do banco de dados..."
-docker ps | grep "py-backend_db" &> /dev/null
-if [ "$?" != "0" ]; then
-    echo "Erro: O contêiner do banco de dados não está em execução."
-    exit 1
-fi
-
-# Arquivo JSON com os dados das viagens
-json_file="$project_dir/app/data.json"
-
-# Executar a requisição POST para adicionar os dados ao banco de dados
-echo "Adicionando dados ao banco de dados..."
-curl -X POST -H "Content-Type: application/json" -d "@$json_file" "$server_url$add_data_endpoint"
-
-
-# Exibir mensagem de conclusão
 echo "Aplicação iniciada com sucesso!"
 echo "Acesse o frontend em http://localhost:8080"
 echo "Acesse a API em http://localhost:3000/docs"

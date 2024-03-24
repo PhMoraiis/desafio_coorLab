@@ -10,7 +10,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./src:/app/src/
+      - ./src:/app/src/withDocker/
 
   db:
     image: postgres:latest

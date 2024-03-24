@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia todos os arquivos da pasta src para o diretório de trabalho no container
-COPY src/ .
+COPY src/withDocker/ .
 
 # Expõe a porta 80 para acesso à API
 EXPOSE 3000
